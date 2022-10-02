@@ -52,7 +52,7 @@ public struct SvgPathDataParser {
         if let n = numberFormatter.number(from: currentArgment) {
             arguments.append(CGFloat(truncating: n))
         } else {
-            assertionFailure("Can't parse number \(currentArgment)")
+            //assertionFailure("Can't parse number \(currentArgment)")
         }
         
     }
