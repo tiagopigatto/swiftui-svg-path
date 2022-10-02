@@ -61,7 +61,7 @@ public struct SvgPathDataParser {
                 if let n = numberFormatter.number(from: currentArgment) {
                     arguments.append(CGFloat(truncating: n))
                 } else {
-                    assertionFailure("Can't parse number \(currentCommand)")
+                    //assertionFailure("Can't parse number \(currentCommand)")
                 }
             }
             
@@ -70,7 +70,7 @@ public struct SvgPathDataParser {
                argumentCount == arguments.count {
                 commands.append(generateCommand(ch: ch, args: arguments))
             } else {
-                assertionFailure("Bad arguments: \(currentCommand)")
+                //assertionFailure("Bad arguments: \(currentCommand)")
             }
         }
         currentCommand = String(ch)
@@ -81,7 +81,7 @@ public struct SvgPathDataParser {
     
     func generateCommand(ch: String, args: [CGFloat]) -> SvgCommand {
         guard let expectedArgumentCount = Self.separatorArgmentCounts[ch] else {
-            assertionFailure("Unknown separator: \(ch)")
+            \Failure("Unknown separator: \(ch)")
             return .invalid(command: ch, expected: 0, actual: args.count)
         }
         
