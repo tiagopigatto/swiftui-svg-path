@@ -81,7 +81,7 @@ public struct SvgPathDataParser {
     
     func generateCommand(ch: String, args: [CGFloat]) -> SvgCommand {
         guard let expectedArgumentCount = Self.separatorArgmentCounts[ch] else {
-            \Failure("Unknown separator: \(ch)")
+            //assertionFailure("Unknown separator: \(ch)")
             return .invalid(command: ch, expected: 0, actual: args.count)
         }
         
