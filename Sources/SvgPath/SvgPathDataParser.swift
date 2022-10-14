@@ -20,8 +20,12 @@ public struct SvgPathDataParser {
                     addCurrentArgument()
                     currentArgment = ""
                 } else if ch == "-" {
-                    addCurrentArgument()
-                    currentArgment = "-"
+                    if let last = currentArgment.last, "eE".contains(last) {
+                        currentArgment += String(ch)
+                    } else {
+                        addCurrentArgument()
+                        currentArgment = "-"
+                    }
                 } else if ch == "." && currentArgment.contains(".") { // a new arg can just start by introducing a new period 0.25.456
                     addCurrentArgument()
                     currentArgment = "."
