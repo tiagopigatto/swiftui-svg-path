@@ -169,8 +169,11 @@ public struct SvgPath: InsettableShape {
 fileprivate extension Path {
     /// Returns a copy of the path scaled to fit the specified rectangle
     func scaled(toFit rect: CGRect, viewBox: CGRect? = nil) -> Path {
-        let scale = rect.size / (viewBox ?? self.boundingRect).size
+        let nativeSize = (viewBox ?? self.boundingRect).size
+        let scale = rect.size / nativeSize
         let scaleFactor = min(scale.width, scale.height)
-        return self.applying(CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
+        let offset = (rect.size - nativeSize * scaleFactor) / 2
+        return self.applying(.init(scaleX: scaleFactor, y: scaleFactor))
+                   .offsetBy(dx: offset.width, dy: offset.height)
     }
 }

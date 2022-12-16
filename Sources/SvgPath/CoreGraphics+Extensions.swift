@@ -10,6 +10,7 @@ extension CGPoint {
 extension CGSize {
     static prefix func - (value: CGSize) -> CGSize { .init(width: -value.width, height: -value.height) }
     static func + (lhs: CGSize, rhs: CGSize) -> CGSize { .init(width: lhs.width + rhs.width, height: lhs.height + rhs.height) }
+    static func - (lhs: CGSize, rhs: CGSize) -> CGSize { .init(width: lhs.width - rhs.width, height: lhs.height - rhs.height) }
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize { .init(width: lhs.width * rhs, height: lhs.height * rhs) }
     static func / (lhs: CGSize, rhs: CGFloat) -> CGSize { .init(width: lhs.width / rhs, height: lhs.height / rhs) }
     static func / (lhs: CGSize, rhs: CGSize) -> CGSize { .init(width: lhs.width / rhs.width, height: lhs.height / rhs.height) }
