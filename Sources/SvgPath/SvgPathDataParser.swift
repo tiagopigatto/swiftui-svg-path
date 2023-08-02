@@ -3,7 +3,6 @@ import CoreGraphics
 
 
 public struct SvgPathDataParser {
-    let numberFormatter = NumberFormatter()
     var commands = [SvgCommand]()
     
     var arguments = [CGFloat]()
@@ -21,8 +20,12 @@ public struct SvgPathDataParser {
                     addCurrentArgument()
                     currentArgment = ""
                 } else if ch == "-" {
-                    addCurrentArgument()
-                    currentArgment = "-"
+                    if let last = currentArgment.last, "eE".contains(last) {
+                        currentArgment += String(ch)
+                    } else {
+                        addCurrentArgument()
+                        currentArgment = "-"
+                    }
                 } else if ch == "." && currentArgment.contains(".") { // a new arg can just start by introducing a new period 0.25.456
                     addCurrentArgument()
                     currentArgment = "."
@@ -49,8 +52,8 @@ public struct SvgPathDataParser {
             addCommand(ch: ch)
         }
         
-        if let n = numberFormatter.number(from: currentArgment) {
-            arguments.append(CGFloat(truncating: n))
+        if let n = Double(currentArgment) {
+            arguments.append(CGFloat(n))
         } else {
             //assertionFailure("Can't parse number \(currentArgment)")
         }
@@ -60,8 +63,8 @@ public struct SvgPathDataParser {
     mutating func addCommand(ch: String) {
         if !currentCommand.trimmingCharacters(in: .whitespaces).isEmpty {
             if !currentArgment.trimmingCharacters(in: .whitespaces).isEmpty {
-                if let n = numberFormatter.number(from: currentArgment) {
-                    arguments.append(CGFloat(truncating: n))
+                if let n = Double(currentArgment) {
+                    arguments.append(CGFloat(n))
                 } else {
                     assertionFailure("Can't parse number \(currentCommand)")
                 }

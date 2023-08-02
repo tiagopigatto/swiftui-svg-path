@@ -10,6 +10,15 @@ public struct SvgPath: InsettableShape {
     public static func compile(_ paths: [String]) -> Path { Self.compile(Self.parse(paths)) }
     public static func compile(_ path: String) -> Path { Self.compile(Self.parse([path])) }
 
+    public static func compile(paths: [String], viewBox: CGRect) -> SvgPath {
+        .init(path: Self.compile(paths), viewBox: viewBox)
+    }
+
+    public static func compile(paths: [String], viewBox size: CGSize) -> SvgPath {
+        Self.compile(paths: paths, viewBox: .init(origin: .zero, size: size))
+    }
+
+    
     public static func parse(_ paths: [String]) -> [SvgCommand] {
         var parser = SvgPathDataParser()
         return paths.flatMap { parser.parse(str: $0) }
@@ -154,6 +163,12 @@ public struct SvgPath: InsettableShape {
     public func path(in rect: CGRect) -> Path { self.path().scaled(toFit: rect.deflated(by: self.inset),
                                                                    viewBox: self.viewBox) }
     
+    /// Fixes `SvgPath` view at its ideal size
+    public func fixedSize() -> some View {
+        let idealSize = (self.viewBox ?? self.path().boundingRect).size
+        return self.frame(width: idealSize.width, height: idealSize.height)
+    }
+
     private func path() -> Path { self.compiledPath }
     
     private static func expectedCurrentPoint(command: SvgCommand) {
@@ -169,8 +184,11 @@ public struct SvgPath: InsettableShape {
 fileprivate extension Path {
     /// Returns a copy of the path scaled to fit the specified rectangle
     func scaled(toFit rect: CGRect, viewBox: CGRect? = nil) -> Path {
-        let scale = rect.size / (viewBox ?? self.boundingRect).size
+        let nativeSize = (viewBox ?? self.boundingRect).size
+        let scale = rect.size / nativeSize
         let scaleFactor = min(scale.width, scale.height)
-        return self.applying(CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
+        let offset = (rect.size - nativeSize * scaleFactor) / 2
+        return self.applying(.init(scaleX: scaleFactor, y: scaleFactor))
+                   .offsetBy(dx: offset.width, dy: offset.height)
     }
 }
